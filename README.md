@@ -1,2 +1,2 @@
 # memqueue
-This library is an implementation of a queue with memcached
+This library is an implementation of a queue with memcache

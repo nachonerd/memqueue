@@ -1,0 +1,31 @@
+{
+  "name": "memqueue",
+  "version": "0.0.1",
+  "description": "This library is an implementation of a queue with memcached",
+  "main": "index.js",
+  "keywords": [
+      "memcache",
+      "memcached",
+      "queue",
+      "cache",
+      "memory",
+      "nachonerd"
+  ],
+  "scripts": {
+    "test": "mocha $(find test -name '*.test.js')"
+  },
+  "repository" : {
+      "type" : "git",
+      "url" : "https://github.com/nachonerd/memqueue.git"
+  },
+  "dependencies": {
+    "memcached": "2.2.x"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "sinon": "*"
+  },
+  "author": "Ignacio R. Galieri <irgalieri@gmail.com> (http://elnachonerd.com/)",
+  "license": "GPL-3.0"
+}
