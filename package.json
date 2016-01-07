@@ -9,7 +9,8 @@
       "queue",
       "cache",
       "memory",
-      "nachonerd"
+      "nachonerd",
+      "memqueue"
   ],
   "scripts": {
     "test": "mocha $(find test -name '*.test.js')"
