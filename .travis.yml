@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "5.4"
+  - "4.2"
+  - "iojs"
+
+before_script:
+- npm install -g codeclimate-test-reporter
+- npm install
+
+script:
+- npm run-script coverage
+
+after_script:
+- CODECLIMATE_REPO_TOKEN=fbb3472e001d0718f7ead2124f20e7487f228891d3d5710a83b73589f35290bb codeclimate-test-reporter < coverage/lcov.info

@@ -1,6 +1,6 @@
 {
   "name": "memqueue",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "This library is an implementation of a queue with memcached",
   "main": "index.js",
   "keywords": [
@@ -13,7 +13,8 @@
       "memqueue"
   ],
   "scripts": {
-    "test": "mocha $(find test -name '*.test.js')"
+    "test": "mocha $(find test -name '*.test.js')",
+    "coverage": "istanbul cover _mocha $(find test -name '*.test.js')"
   },
   "repository" : {
       "type" : "git",
@@ -25,7 +26,8 @@
   "devDependencies": {
     "mocha": "*",
     "should": "*",
-    "sinon": "*"
+    "sinon": "*",
+    "istanbul": "*"
   },
   "author": "Ignacio R. Galieri <irgalieri@gmail.com> (http://elnachonerd.com/)",
   "license": "GPL-3.0"
