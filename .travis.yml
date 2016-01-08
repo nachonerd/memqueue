@@ -6,7 +6,6 @@ node_js:
 
 before_script:
 - npm install -g codeclimate-test-reporter
-- npm install
 
 script:
 - npm run-script coverage
