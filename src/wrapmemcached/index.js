@@ -16,33 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category   Src
- * @package    MemQueue
+ * @package    WrapMemCached
  * @author     Ignacio R. Galieri <irgalieri@gmail.com>
  * @copyright  2016 Ignacio R. Galieri
  * @license    GPL-3.0
  * @link       https://github.com/nachonerd/memqueue
  */
 
-var WrapMemCached = require('../src/wrapmemcached');
+var Memcached = require('memcached');
+var WrapMemCached = {};
 
 /**
- * Constructor
+ * Get Intnace Of Memcached
  *
- * @constructor
- * @param {Mixed}  key       Key String or Number
+ * This function is only to help the mocking
+ *
  * @param {Mixed}  locations Array, string or object with servers
  * @param {Object} options   Options
  * @api public
  */
-function MemQueue(key, locations, options){
-    if (key === undefined) {
-        throw new Error("Must set queue key");
-    }
-    if (!(typeof key === 'string' || typeof key === 'number')) {
-        throw new Error("The key parameter must be number or string");
-    }
-    this.key = key;
-    this.broker = WrapMemCached.getIntanceOf(locations, options);
+WrapMemCached.getIntanceOf = function (locations, options) {
+    return new Memcached(locations, options);
 }
 
-module.exports = MemQueue;
+module.exports = WrapMemCached;

@@ -1,6 +1,6 @@
 {
   "name": "memqueue",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "This library is an implementation of a queue with memcached",
   "main": "index.js",
   "keywords": [
@@ -30,5 +30,9 @@
     "istanbul": "*"
   },
   "author": "Ignacio R. Galieri <irgalieri@gmail.com> (http://elnachonerd.com/)",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/nachonerd/memqueue/issues"
+  },
+  "homepage": "https://github.com/nachonerd/memqueue"
 }
