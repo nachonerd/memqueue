@@ -175,4 +175,27 @@ describe('MemQueue', function() {
             assert.equal(true, (message instanceof Memcached));
         });
     });
+    context('when push', function () {
+        it("1 should set 1 in memcached server", function () {
+            var message = "";
+            var callback = function (error) {
+                throw new Error("Some error");
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                var stub = new Memcached();
+                sinon.stub(stub, 'set')
+                    .withArgs("nacho111111", 1 , 10, callback)
+                    .throws(new Error("Set 1 in memcached server"));
+                return stub;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.push(1 , 10, callback);
+            } catch (e) {
+                message = e;
+            }
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("Set 1 in memcached server").message, message.message);
+        });
+    });
 });

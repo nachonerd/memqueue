@@ -45,4 +45,26 @@ function MemQueue(key, locations, options){
     this.broker = WrapMemCached.getIntanceOf(locations, options);
 }
 
+/**
+ * Push
+ *
+ * Stores a new value in Memqueue.
+ *
+ * @param {Mixed}    value    Either a buffer, JSON, number or string that
+ *                            you want to store.
+ * @param {Number}   lifetime how long the data needs to be stored measured
+ *                            in seconds
+ * @param {Function} callback the callback
+ *
+ * @return {void}
+ * @api public
+ */
+function push(value, lifetime, callback) {
+    this.broker.set("nacho111111", value, lifetime, callback);
+}
+
+MemQueue.prototype = {
+    push: push
+};
+
 module.exports = MemQueue;
