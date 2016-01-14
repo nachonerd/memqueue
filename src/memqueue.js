@@ -60,7 +60,53 @@ function MemQueue(key, locations, options){
  * @api public
  */
 function push(value, lifetime, callback) {
-    this.broker.set("nacho111111", value, lifetime, callback);
+    var self = this;
+    self.broker.get(
+        self.key+"sem",
+        function (err, data) {
+            if (err) {
+                callback(err);
+            }
+            if (data === 1) {
+                callback("queue in use, try later");
+            }
+            self.broker.set(
+                self.key+"sem",
+                1,
+                86400,
+                function (err) {
+                    if (err) {
+                        callback(err);
+                    }
+                    self.broker.get(
+                        self.key+"key",
+                        function (err, data) {
+                            if (err) {
+                                callback(err);
+                            }
+                            data = data + 1;
+                            self.broker.set(
+                                self.key+"key",
+                                data,
+                                86400,
+                                function (err) {
+                                    if (err) {
+                                        callback(err);
+                                    }
+                                    self.broker.set(
+                                        self.key+data,
+                                        value,
+                                        lifetime,
+                                        callback
+                                    );
+                                }
+                            );
+                        }
+                    );
+                }
+            );
+        }
+    );
 }
 
 MemQueue.prototype = {
