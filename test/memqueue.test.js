@@ -423,114 +423,7 @@ describe('MemQueue', function() {
                 assert.equal(new Error("some memcached error").message, message.message);
             });
         });
-        context(' (1, 10, callback) and semaphore allway ok and key returns ', function () {
-            it("0 should set key '<keyname>+1' if set faild and return same error.", function () {
-                var message = "";
-                var objMen = new Memcached();
-                var callback = function (error) {
-                    throw new Error(error);
-                }
-                sinon.stub(WrapMemCached, 'getIntanceOf', function () {
-                    stubGet = sinon.stub(objMen, "get");
-                    stubSet = sinon.stub(objMen, "set");
-
-                    stubGet.withArgs("nachosem")
-                        .callsArgWith(1, false, 0);
-                    stubGet.withArgs("nachokey")
-                        .callsArgWith(1, false, 0);
-
-                    stubSet.withArgs("nachosem", 1, 86400)
-                        .callsArgWith(3, false);
-                    stubSet.withArgs("nachokey", 1, 86400)
-                        .callsArgWith(3, false);
-                    stubSet.withArgs("nacho1", 1, 10, callback)
-                        .callsArgWith(3, "some memcached error");
-
-                    return objMen;
-                });
-                var queue = new MemQueue("nacho", 'localhost:11211');
-                try {
-                    queue.push(1 , 10, callback);
-                } catch (e) {
-                    message = e;
-                }
-                objMen.get.restore();
-                objMen.set.restore();
-                WrapMemCached.getIntanceOf.restore();
-                assert.equal(new Error("some memcached error").message, message.message);
-            });
-            it("1110 should set key '<keyname>+1111' if set faild and return same error.", function () {
-                var message = "";
-                var objMen = new Memcached();
-                var callback = function (error) {
-                    throw new Error(error);
-                }
-                sinon.stub(WrapMemCached, 'getIntanceOf', function () {
-                    stubGet = sinon.stub(objMen, "get");
-                    stubSet = sinon.stub(objMen, "set");
-
-                    stubGet.withArgs("nachosem")
-                        .callsArgWith(1, false, 0);
-                    stubGet.withArgs("nachokey")
-                        .callsArgWith(1, false, 1110);
-
-                    stubSet.withArgs("nachosem", 1, 86400)
-                        .callsArgWith(3, false);
-                    stubSet.withArgs("nachokey", 1111, 86400)
-                        .callsArgWith(3, false);
-                    stubSet.withArgs("nacho1111", 1, 10, callback)
-                        .callsArgWith(3, "some memcached error");
-
-                    return objMen;
-                });
-                var queue = new MemQueue("nacho", 'localhost:11211');
-                try {
-                    queue.push(1 , 10, callback);
-                } catch (e) {
-                    message = e;
-                }
-                objMen.get.restore();
-                objMen.set.restore();
-                WrapMemCached.getIntanceOf.restore();
-                assert.equal(new Error("some memcached error").message, message.message);
-            });
-            it("2 should set key '<keyname>+2' if set faild and return same error.", function () {
-                var message = "";
-                var objMen = new Memcached();
-                var callback = function (error) {
-                    throw new Error(error);
-                }
-                sinon.stub(WrapMemCached, 'getIntanceOf', function () {
-                    stubGet = sinon.stub(objMen, "get");
-                    stubSet = sinon.stub(objMen, "set");
-
-                    stubGet.withArgs("nachosem")
-                        .callsArgWith(1, false, 0);
-                    stubGet.withArgs("nachokey")
-                        .callsArgWith(1, false, 1);
-
-                    stubSet.withArgs("nachosem", 1, 86400)
-                        .callsArgWith(3, false);
-                    stubSet.withArgs("nachokey", 2, 86400)
-                        .callsArgWith(3, false);
-                    stubSet.withArgs("nacho2", 1, 10, callback)
-                        .callsArgWith(3, "some memcached error");
-
-                    return objMen;
-                });
-                var queue = new MemQueue("nacho", 'localhost:11211');
-                try {
-                    queue.push(1 , 10, callback);
-                } catch (e) {
-                    message = e;
-                }
-                objMen.get.restore();
-                objMen.set.restore();
-                WrapMemCached.getIntanceOf.restore();
-                assert.equal(new Error("some memcached error").message, message.message);
-            });
-        });
-        context('(1111, 2, callback)', function () {
+        context(' (1111, 2, callback)', function () {
             it("should successful.", function () {
                 var message = "";
                 var objMen = new Memcached();
@@ -551,6 +444,8 @@ describe('MemQueue', function() {
                     stubSet.withArgs("nachokey", 2, 86400)
                         .callsArgWith(3, false);
                     stubSet.withArgs("nacho2", 1111, 2, callback)
+                        .callsArgWith(3, false);
+                    stubSet.withArgs("nachosem", 0, 86400)
                         .callsArgWith(3, false);
 
                     return objMen;
@@ -589,6 +484,8 @@ describe('MemQueue', function() {
                         .callsArgWith(3, false);
                     stubSet.withArgs("nacho2", 1, 10, callback)
                         .callsArgWith(3, false);
+                    stubSet.withArgs("nachosem", 0, 86400)
+                        .callsArgWith(3, false);
 
                     return objMen;
                 });
@@ -603,6 +500,439 @@ describe('MemQueue', function() {
                 WrapMemCached.getIntanceOf.restore();
                 assert.equal(new Error("successful").message, message.message);
             });
+        });
+    });
+    context('when push finish', function () {
+        it("should set semaphore in 0 if faild return same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 1);
+
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubSet.withArgs("nachokey", 2, 86400)
+                    .callsArgWith(3, false);
+                stubSet.withArgs("nacho2", 1111, 2, callback)
+                    .callsArgWith(3, false);
+                stubSet.withArgs("nachosem", 0, 86400)
+                    .callsArgWith(3, "Error memcached");
+
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.push(1111, 2, callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("Error memcached").message, message.message);
+        });
+    });
+    context('when pop', function () {
+        it("should check semaphore if faild return same error on callback.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, "MEMCACHE SOME ERROR", undefined);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("MEMCACHE SOME ERROR").message, message.message);
+        });
+        it("should check semaphore if 1 callback error queue in use.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 1);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("queue in use, try later").message, message.message);
+        });
+        it("should check semaphore if 0 set semophore 1 if faild return same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, "SET MEMCACHE FAILD");
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("SET MEMCACHE FAILD").message, message.message);
+        });
+    });
+    context('when pop locked semophore ok', function () {
+        it("should get nachokey if faild calls callback with same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, "GET KEY ERROR", undefined);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("GET KEY ERROR").message, message.message);
+        });
+        it("should get key 1111 set nachokey 1110 if faild calls callback with same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 1111);
+                stubSet.withArgs("nachokey", 1110, 86400)
+                    .callsArgWith(3, "SET ERROR KEY");
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("SET ERROR KEY").message, message.message);
+        });
+        it("should get key 11 set nachokey 10 if faild calls callback with same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 11);
+                stubSet.withArgs("nachokey", 10, 86400)
+                    .callsArgWith(3, "SET ERROR KEY");
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("SET ERROR KEY").message, message.message);
+        });
+        it("should get key 0 unlock semaphore if failds calls callback with same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 0, 86400)
+                    .callsArgWith(3, "SET ERROR KEY");
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("SET ERROR KEY").message, message.message);
+        });
+        it("should get key 0 unlock semaphore and calls callback with error 'queue is empty'.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 0, 86400)
+                    .callsArgWith(3, false);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("queue is empty").message, message.message);
+        });
+    });
+    context('when pop locked semophore ok and set key 3 ok', function () {
+        it("should get nacho4 faild calls callback woth same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 4);
+                stubSet.withArgs("nachokey", 3, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nacho4")
+                    .callsArgWith(1, "ERROR GET NACHO4", undefined);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("ERROR GET NACHO4").message, message.message);
+        });
+        it("should get nacho4 ok unlock semaphore faild calls callback with same error.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error(error);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 4);
+                stubSet.withArgs("nachokey", 3, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nacho4")
+                    .callsArgWith(1, false, 12);
+                stubSet.withArgs("nachosem", 0, 86400)
+                    .callsArgWith(3, "ERROR SET SEM");
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("ERROR SET SEM").message, message.message);
+        });
+    });
+    context('when pop success', function () {
+        it("should calls callaback with error false and data 12.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error("success " + data);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 4);
+                stubSet.withArgs("nachokey", 3, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nacho4")
+                    .callsArgWith(1, false, 12);
+                stubSet.withArgs("nachosem", 0, 86400)
+                    .callsArgWith(3, false);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("success 12").message, message.message);
+        });
+        it("should calls callaback with error false and data 24.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error("success " + data);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 4);
+                stubSet.withArgs("nachokey", 3, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nacho4")
+                    .callsArgWith(1, false, 24);
+                stubSet.withArgs("nachosem", 0, 86400)
+                    .callsArgWith(3, false);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("success 24").message, message.message);
+        });
+        it("should calls callaback with error false and data 'nacho rules'.", function () {
+            var message = "";
+            var objMen = new Memcached();
+            var callback = function (error, data) {
+                throw new Error("success " + data);
+            }
+            sinon.stub(WrapMemCached, 'getIntanceOf', function () {
+                stubGet = sinon.stub(objMen, "get");
+                stubSet = sinon.stub(objMen, "set");
+                stubGet.withArgs("nachosem")
+                    .callsArgWith(1, false, 0);
+                stubSet.withArgs("nachosem", 1, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nachokey")
+                    .callsArgWith(1, false, 4);
+                stubSet.withArgs("nachokey", 3, 86400)
+                    .callsArgWith(3, false);
+                stubGet.withArgs("nacho4")
+                    .callsArgWith(1, false, 'nacho rules');
+                stubSet.withArgs("nachosem", 0, 86400)
+                    .callsArgWith(3, false);
+                return objMen;
+            });
+            var queue = new MemQueue("nacho", 'localhost:11211');
+            try {
+                queue.pop(callback);
+            } catch (e) {
+                message = e;
+            }
+            objMen.get.restore();
+            objMen.set.restore();
+            WrapMemCached.getIntanceOf.restore();
+            assert.equal(new Error("success nacho rules").message, message.message);
         });
     });
 });

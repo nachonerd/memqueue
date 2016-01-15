@@ -94,10 +94,101 @@ function push(value, lifetime, callback) {
                                         return callback(err);
                                     }
                                     self.broker.set(
-                                        self.key+data,
-                                        value,
-                                        lifetime,
-                                        callback
+                                        self.key+"sem",
+                                        0,
+                                        86400,
+                                        function (err) {
+                                            if (err) {
+                                                return callback(err);
+                                            }
+                                            return callback(false);
+                                        }
+                                    );
+                                }
+                            );
+                        }
+                    );
+                }
+            );
+        }
+    );
+}
+
+/**
+ * Pop
+ *
+ * Retrieve Last value from memqueue.
+ *
+ * @param {Function} callback the callback
+ *
+ * @return {void}
+ * @api public
+ */
+function pop(callback) {
+    var self = this;
+    self.broker.get(
+        self.key+"sem",
+        function (err, data) {
+            if (err) {
+                return callback(err, undefined);
+            }
+            if (data === 1) {
+                return callback("queue in use, try later", undefined);
+            }
+            self.broker.set(
+                self.key+"sem",
+                1,
+                86400,
+                function (err) {
+                    if (err) {
+                        return callback(err, undefined);
+                    }
+                    self.broker.get(
+                        self.key+"key",
+                        function (err, data) {
+                            if (err) {
+                                return callback(err, undefined);
+                            }
+                            if (data == 0) {
+                                self.broker.set(
+                                    self.key+"sem",
+                                    0,
+                                    86400,
+                                    function (err) {
+                                        if (err) {
+                                            return callback(err, undefined);
+                                        }
+                                        return callback('queue is empty', undefined);
+                                    }
+                                );
+                            }
+                            data = data - 1;
+                            self.broker.set(
+                                self.key+"key",
+                                data,
+                                86400,
+                                function (err) {
+                                    if (err) {
+                                        return callback(err, undefined);
+                                    }
+                                    self.broker.get(
+                                        self.key+(data+1),
+                                        function (err, value) {
+                                            if (err) {
+                                                return callback(err, undefined);
+                                            }
+                                            self.broker.set(
+                                                self.key+"sem",
+                                                0,
+                                                86400,
+                                                function (err) {
+                                                    if (err) {
+                                                        return callback(err, undefined);
+                                                    }
+                                                    return callback(false, value);
+                                                }
+                                            );
+                                        }
                                     );
                                 }
                             );
@@ -110,7 +201,8 @@ function push(value, lifetime, callback) {
 }
 
 MemQueue.prototype = {
-    push: push
+    push: push,
+    pop: pop
 };
 
 module.exports = MemQueue;
