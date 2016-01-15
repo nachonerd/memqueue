@@ -149,7 +149,7 @@ function pop(callback) {
                             if (err) {
                                 return callback(err, undefined);
                             }
-                            if (data == 0) {
+                            if (data === 0) {
                                 self.broker.set(
                                     self.key+"sem",
                                     0,
