@@ -1,3 +1,6 @@
-test
-example
 coverage
+test
+node_modules
+.codeclimate.yml
+.gitignore
+.travis.yml

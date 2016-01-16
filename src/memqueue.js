@@ -84,6 +84,9 @@ function push(value, lifetime, callback) {
                             if (err) {
                                 return callback(err);
                             }
+                            if (data === undefined) {
+                                data = 0;
+                            }
                             data = data + 1;
                             self.broker.set(
                                 self.key+"key",
@@ -94,14 +97,24 @@ function push(value, lifetime, callback) {
                                         return callback(err);
                                     }
                                     self.broker.set(
-                                        self.key+"sem",
-                                        0,
-                                        86400,
+                                        self.key+data,
+                                        value,
+                                        lifetime,
                                         function (err) {
                                             if (err) {
                                                 return callback(err);
                                             }
-                                            return callback(false);
+                                            self.broker.set(
+                                                self.key+"sem",
+                                                0,
+                                                86400,
+                                                function (err) {
+                                                    if (err) {
+                                                        return callback(err);
+                                                    }
+                                                    return callback(false);
+                                                }
+                                            );
                                         }
                                     );
                                 }
@@ -200,9 +213,22 @@ function pop(callback) {
     );
 }
 
+/**
+ * End
+ *
+ * Finish memcached connection.
+ *
+ * @return {void}
+ * @api public
+ */
+function end() {
+    this.broker.end();
+}
+
 MemQueue.prototype = {
     push: push,
-    pop: pop
+    pop: pop,
+    end: end
 };
 
 module.exports = MemQueue;

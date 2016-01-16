@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "test": "mocha $(find test -name '*.test.js')",
-    "coverage": "istanbul cover _mocha $(find test -name '*.test.js')"
+    "coverage": "istanbul cover _mocha $(find test -name '*.test.js')",
+    "example": "node examples/index.js"
   },
   "repository" : {
       "type" : "git",
@@ -27,7 +28,9 @@
     "mocha": "*",
     "should": "*",
     "sinon": "*",
-    "istanbul": "*"
+    "istanbul": "*",
+    "benchmark": "*",
+    "microtime": "*"
   },
   "author": "Ignacio R. Galieri <irgalieri@gmail.com> (http://elnachonerd.com/)",
   "license": "GPL-3.0",

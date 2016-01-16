@@ -4,8 +4,13 @@ node_js:
   - "4.2"
   - "iojs"
 
+services: memcache
+env: MEMCACHED__HOST=localhost
+env: MEMCACHED__PORT=11213
+
 before_script:
 - npm install -g codeclimate-test-reporter
+- memcached -p 11213 -d
 
 script:
 - npm run-script coverage
