@@ -12,7 +12,6 @@ before_script:
 - memcached -p 11213 -d
 
 before_install:
-  - "npm install -g npm@2.1.x"
   - npm install -g codeclimate-test-reporter
 
 script:

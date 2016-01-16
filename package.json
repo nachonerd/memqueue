@@ -29,8 +29,7 @@
     "should": "*",
     "sinon": "*",
     "istanbul": "*",
-    "benchmark": "*",
-    "microtime": "*"
+    "benchmark": "*"
   },
   "author": "Ignacio R. Galieri <irgalieri@gmail.com> (http://elnachonerd.com/)",
   "license": "GPL-3.0",
