@@ -9,8 +9,11 @@ env: MEMCACHED__HOST=localhost
 env: MEMCACHED__PORT=11213
 
 before_script:
-- npm install -g codeclimate-test-reporter
 - memcached -p 11213 -d
+
+before_install:
+  - "npm install -g npm@2.1.x"
+  - npm install -g codeclimate-test-reporter
 
 script:
 - npm run-script coverage
