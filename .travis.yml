@@ -6,8 +6,7 @@ node_js:
 
 services: memcache
 env:
-  - MEMCACHED__HOST=localhost
-  - MEMCACHED__PORT=11213
+  - MEMCACHED__HOST=localhost MEMCACHED__PORT=11213
 
 before_script:
  - memcached -p 11213 -d
