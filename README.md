@@ -18,7 +18,7 @@ This NodeJs library is an implementation of queue with memcached.
 ## Usage
 
 ```js
-var MemQueue = require('../');
+var MemQueue = require('memqueue');
 
 console.info("Creating Queue...");
 try {
