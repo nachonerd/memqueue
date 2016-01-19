@@ -22,6 +22,7 @@ var MemQueue = require('memqueue');
 
 console.info("Creating Queue...");
 try {
+    // create a new queue
     var queue = new MemQueue("myqueue", 'localhost:11213');
 } catch (e) {
     console.error("Creation Fail: "+e.message);
@@ -30,20 +31,75 @@ try {
 var element = "element"+Math.floor((Math.random()*10000));
 
 console.info("Pushing first element: "+element);
+// push an element into the queue.
 queue.push(element, 10, function (err) {
     if (err) {
         console.error("Push Fail: "+err);
     }
     console.info("Retrieveing last element");
+    // retrieve the previously pushed object .
     queue.pop(function (err, data) {
         if (err) {
             console.error("Pop Fail: "+err);
         }
         console.info("The last element was: "+data);
+        // end memcached connection.
         queue.end();
     });
 });
 ```
+
+<a name="method"></a>
+## Methods
+**Kind**: global class  
+**Api**: public  
+<a name="new_MemQueue_new"></a>
+### new MemQueue(key, locations, options)
+Constructor
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Mixed</code> | Key String or Number |
+| locations | <code>Mixed</code> | Array, string or object with servers |
+| options | <code>Object</code> | Options |
+
+<a name="push"></a>
+## push(value, lifetime, callback) ⇒ <code>void</code>
+Push
+
+Stores a new value in Memqueue.
+
+**Kind**: global function  
+**Api**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Mixed</code> | Either a buffer, JSON, number or string that                            you want to store. |
+| lifetime | <code>Number</code> | how long the data needs to be stored measured                            in seconds |
+| callback | <code>function</code> | the callback |
+
+<a name="pop"></a>
+## pop(callback) ⇒ <code>void</code>
+Pop
+
+Retrieve Last value from memqueue.
+
+**Kind**: global function  
+**Api**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | the callback |
+
+<a name="end"></a>
+## end() ⇒ <code>void</code>
+End
+
+Finish memcached connection.
+
+**Kind**: global function  
+**Api**: public  
 
 For more information see [Documentation](https://github.com/nachonerd/memqueue/blob/master/doc/documentation.md)
 
