@@ -1,14 +1,12 @@
 MemQueue
 ==========
 
-[![Join the chat at https://gitter.im/nachonerd/memqueue](https://badges.gitter.im/nachonerd/memqueue.svg)](https://gitter.im/nachonerd/memqueue?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Build Status](https://travis-ci.org/nachonerd/memqueue.svg?branch=master)](https://travis-ci.org/nachonerd/memqueue)
 [![Code Climate](https://codeclimate.com/github/nachonerd/memqueue/badges/gpa.svg)](https://codeclimate.com/github/nachonerd/memqueue)
 [![Test Coverage](https://codeclimate.com/github/nachonerd/memqueue/badges/coverage.svg)](https://codeclimate.com/github/nachonerd/memqueue/coverage)
 [![Issue Count](https://codeclimate.com/github/nachonerd/memqueue/badges/issue_count.svg)](https://codeclimate.com/github/nachonerd/memqueue)
 [![Dependencies Checker](https://david-dm.org/nachonerd/memqueue.svg)](https://david-dm.org/nachonerd/memqueue)
-[![Chat Room](https://img.shields.io/badge/chat-on%20slack-blue.svg)](https://nachonerd.slack.com/messages/memqueue/)
+[![Join the chat at https://gitter.im/nachonerd/memqueue](https://badges.gitter.im/nachonerd/memqueue.svg)](https://gitter.im/nachonerd/memqueue?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![NPM](https://nodei.co/npm/memqueue.png?downloads=true&downloadRank=true)](https://nodei.co/npm/memqueue/)
 
