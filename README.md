@@ -1,6 +1,8 @@
 MemQueue
 ==========
 
+[![Join the chat at https://gitter.im/nachonerd/memqueue](https://badges.gitter.im/nachonerd/memqueue.svg)](https://gitter.im/nachonerd/memqueue?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/nachonerd/memqueue.svg?branch=master)](https://travis-ci.org/nachonerd/memqueue)
 [![Code Climate](https://codeclimate.com/github/nachonerd/memqueue/badges/gpa.svg)](https://codeclimate.com/github/nachonerd/memqueue)
 [![Test Coverage](https://codeclimate.com/github/nachonerd/memqueue/badges/coverage.svg)](https://codeclimate.com/github/nachonerd/memqueue/coverage)
