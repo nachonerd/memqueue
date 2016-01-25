@@ -23,7 +23,10 @@
  * @link       https://github.com/nachonerd/memqueue
  */
 
+var util = require('util');
 var WrapMemCached = require('../src/wrapmemcached');
+var EventEmitter = require('events').EventEmitter;
+
 
 /**
  * Constructor
@@ -32,33 +35,74 @@ var WrapMemCached = require('../src/wrapmemcached');
  * @param {Mixed}  key       Key String or Number
  * @param {Mixed}  locations Array, string or object with servers
  * @param {Object} options   Options
+ * @fires MemQueue#empty
  * @api public
  */
 function MemQueue(key, locations, options){
+    var self = this;
     if (key === undefined) {
         throw new Error("Must set queue key");
     }
     if (!(typeof key === 'string' || typeof key === 'number')) {
         throw new Error("The key parameter must be number or string");
     }
-    this.key = key;
-    this.broker = WrapMemCached.getIntanceOf(locations, options);
+    self.key = key;
+    self.broker = WrapMemCached.getIntanceOf(locations, options);
+    self.heartbeat = 1;
+    self.counter = 0;
+
+    setInterval(function() {
+        self.broker.get(
+            self.key+"key",
+            function (err, data) {
+                if (!err) {
+                    if (data === undefined) {
+                        data = 0;
+                    }
+                    if (self.counter < data) {
+                        /**
+                         * Push event.
+                         *
+                         * This event is called when a new element is add
+                         * to the queue.
+                         *
+                         * @event MemQueue#push
+                         */
+                        self.emit('push');
+                    }
+                    if (self.counter > data) {
+                        /**
+                         * Pop event.
+                         *
+                         * This event is called when an element is remove from
+                         * the queue.
+                         *
+                         * @event MemQueue#pop
+                         */
+                        self.emit('pop');
+                    }
+                    if (data === 0) {
+                        /**
+                         * Empty event.
+                         *
+                         * This event is called when queue change state
+                         * to empty.
+                         *
+                         * @event MemQueue#empty
+                         */
+                        self.emit('empty');
+                    }
+                    self.counter = data;
+                }
+            }
+        );
+    }, self.heartbeat);
+
+    EventEmitter.call(this);
 }
 
-/**
- * Push
- *
- * Stores a new value in Memqueue.
- *
- * @param {Mixed}    value    Either a buffer, JSON, number or string that
- *                            you want to store.
- * @param {Number}   lifetime how long the data needs to be stored measured
- *                            in seconds
- * @param {Function} callback the callback
- *
- * @return {void}
- * @api public
- */
+util.inherits(MemQueue, EventEmitter);
+
 function push(value, lifetime, callback) {
     var self = this;
     self.broker.get(
@@ -127,16 +171,6 @@ function push(value, lifetime, callback) {
     );
 }
 
-/**
- * Pop
- *
- * Retrieve Last value from memqueue.
- *
- * @param {Function} callback the callback
- *
- * @return {void}
- * @api public
- */
 function pop(callback) {
     var self = this;
     self.broker.get(
@@ -213,6 +247,38 @@ function pop(callback) {
     );
 }
 
+function end() {
+    this.broker.end();
+}
+
+/**
+ * Push
+ *
+ * Stores a new value in Memqueue.
+ *
+ * @param {Mixed}    value    Either a buffer, JSON, number or string that
+ *                            you want to store.
+ * @param {Number}   lifetime how long the data needs to be stored measured
+ *                            in seconds
+ * @param {Function} callback the callback
+ *
+ * @return {void}
+ * @fires MemQueue#push
+ * @api public
+ */
+MemQueue.prototype.push = push;
+/**
+ * Pop
+ *
+ * Retrieve Last value from memqueue.
+ *
+ * @param {Function} callback the callback
+ *
+ * @return {void}
+ * @fires MemQueue#pop, MemQueue#empty
+ * @api public
+ */
+MemQueue.prototype.pop = pop;
 /**
  * End
  *
@@ -221,14 +287,6 @@ function pop(callback) {
  * @return {void}
  * @api public
  */
-function end() {
-    this.broker.end();
-}
-
-MemQueue.prototype = {
-    push: push,
-    pop: pop,
-    end: end
-};
+MemQueue.prototype.end = end;
 
 module.exports = MemQueue;

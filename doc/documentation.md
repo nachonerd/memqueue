@@ -8,7 +8,7 @@
 ## Members
 
 <dl>
-<dt><a href="#WrapMemCached">WrapMemCached</a></dt>
+<dt><a href="#util">util</a></dt>
 <dd><p>NachoNerd MemQueue
 Copyright (C) 2016  Ignacio R. Galieri</p>
 <p>This program is free software: you can redistribute it and/or modify
@@ -38,27 +38,21 @@ along with this program.  If not, see <a href="http://www.gnu.org/licenses/">htt
 </dd>
 </dl>
 
-## Functions
-
-<dl>
-<dt><a href="#push">push(value, lifetime, callback)</a> ⇒ <code>void</code></dt>
-<dd><p>Push</p>
-<p>Stores a new value in Memqueue.</p>
-</dd>
-<dt><a href="#pop">pop(callback)</a> ⇒ <code>void</code></dt>
-<dd><p>Pop</p>
-<p>Retrieve Last value from memqueue.</p>
-</dd>
-<dt><a href="#end">end()</a> ⇒ <code>void</code></dt>
-<dd><p>End</p>
-<p>Finish memcached connection.</p>
-</dd>
-</dl>
-
 <a name="MemQueue"></a>
 ## MemQueue
 **Kind**: global class  
+**Emits**: <code>[empty](#MemQueue+event_empty)</code>  
 **Api**: public  
+
+* [MemQueue](#MemQueue)
+    * [new MemQueue(key, locations, options)](#new_MemQueue_new)
+    * [.push](#MemQueue+push) ⇒ <code>void</code>
+    * [.pop](#MemQueue+pop) ⇒ <code>void</code>
+    * [.end](#MemQueue+end) ⇒ <code>void</code>
+    * ["push"](#MemQueue+event_push)
+    * ["pop"](#MemQueue+event_pop)
+    * ["empty"](#MemQueue+event_empty)
+
 <a name="new_MemQueue_new"></a>
 ### new MemQueue(key, locations, options)
 Constructor
@@ -70,13 +64,14 @@ Constructor
 | locations | <code>Mixed</code> | Array, string or object with servers |
 | options | <code>Object</code> | Options |
 
-<a name="push"></a>
-## push(value, lifetime, callback) ⇒ <code>void</code>
+<a name="MemQueue+push"></a>
+### memQueue.push ⇒ <code>void</code>
 Push
 
 Stores a new value in Memqueue.
 
-**Kind**: global function  
+**Kind**: instance property of <code>[MemQueue](#MemQueue)</code>  
+**Emits**: <code>[push](#MemQueue+event_push)</code>  
 **Api**: public  
 
 | Param | Type | Description |
@@ -85,29 +80,54 @@ Stores a new value in Memqueue.
 | lifetime | <code>Number</code> | how long the data needs to be stored measured                            in seconds |
 | callback | <code>function</code> | the callback |
 
-<a name="pop"></a>
-## pop(callback) ⇒ <code>void</code>
+<a name="MemQueue+pop"></a>
+### memQueue.pop ⇒ <code>void</code>
 Pop
 
 Retrieve Last value from memqueue.
 
-**Kind**: global function  
+**Kind**: instance property of <code>[MemQueue](#MemQueue)</code>  
+**Emits**: <code>MemQueue#pop, MemQueue#event:empty</code>  
 **Api**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | callback | <code>function</code> | the callback |
 
-<a name="end"></a>
-## end() ⇒ <code>void</code>
+<a name="MemQueue+end"></a>
+### memQueue.end ⇒ <code>void</code>
 End
 
 Finish memcached connection.
 
-**Kind**: global function  
+**Kind**: instance property of <code>[MemQueue](#MemQueue)</code>  
 **Api**: public  
-<a name="WrapMemCached"></a>
-## WrapMemCached
+<a name="MemQueue+event_push"></a>
+### "push"
+Push event.
+
+This event is called when a new element is add
+to the queue.
+
+**Kind**: event emitted by <code>[MemQueue](#MemQueue)</code>  
+<a name="MemQueue+event_pop"></a>
+### "pop"
+Pop event.
+
+This event is called when an element is remove from
+the queue.
+
+**Kind**: event emitted by <code>[MemQueue](#MemQueue)</code>  
+<a name="MemQueue+event_empty"></a>
+### "empty"
+Empty event.
+
+This event is called when queue change state
+to empty.
+
+**Kind**: event emitted by <code>[MemQueue](#MemQueue)</code>  
+<a name="util"></a>
+## util
 NachoNerd MemQueue
 Copyright (C) 2016  Ignacio R. Galieri
 
@@ -131,20 +151,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **Author:** Ignacio R. Galieri <irgalieri@gmail.com>  
 **License**: GPL-3.0  
 **Copyright**: 2016 Ignacio R. Galieri  
-<a name="WrapMemCached.getIntanceOf"></a>
-### WrapMemCached.getIntanceOf(locations, options)
-Get Intnace Of Memcached
-
-This function is only to help the mocking
-
-**Kind**: static method of <code>[WrapMemCached](#WrapMemCached)</code>  
-**Api**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| locations | <code>Mixed</code> | Array, string or object with servers |
-| options | <code>Object</code> | Options |
-
 <a name="Memcached"></a>
 ## Memcached
 NachoNerd MemQueue
