@@ -105,4 +105,4 @@ Finish memcached connection.
 For more information see [Documentation](https://github.com/nachonerd/memqueue/blob/master/doc/documentation.md)
 
 ## License
-The driver is released under the GPL-3.0 license. See the LICENSE for more information.
+The driver is released under the GPL-3.0 license. See the [LICENSE](https://github.com/nachonerd/memqueue/blob/master/LICENSE) for more information.
