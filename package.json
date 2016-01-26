@@ -1,6 +1,6 @@
 {
   "name": "memqueue",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "This library is an implementation of a queue with memcached",
   "main": "index.js",
   "keywords": [
