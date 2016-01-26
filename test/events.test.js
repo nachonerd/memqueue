@@ -48,11 +48,8 @@ describe('MemQueue#Events', function() {
             assert.equal(queue instanceof EventEmitter, message);
         });
     });
-});
-
-describe('MemQueue#Events#onPush', function() {
-    var pushcalled = false;
     context('when push an element into the queue', function () {
+        var pushcalled = false;
         beforeEach(function(done){
             element = Math.floor((Math.random()*1000000));
             queue = new MemQueue(
@@ -71,11 +68,8 @@ describe('MemQueue#Events#onPush', function() {
             assert.equal(pushcalled, true);
         });
     });
-});
-
-describe('MemQueue#Events#onPop', function() {
-    var popcalled = false;
     context('when pop an element from the queue', function () {
+        var popcalled = false;
         beforeEach(function(done){
             element = Math.floor((Math.random()*1000000));
             var queue = new MemQueue(
@@ -95,12 +89,9 @@ describe('MemQueue#Events#onPop', function() {
             assert.equal(popcalled, true);
         });
     });
-});
-
-describe('MemQueue#Events#onEmpty', function() {
-    var empty1called = false;
-    var callercounter = 0;
     context('when create a queue', function () {
+        var empty1called = false;
+        var callercounter = 0;
         beforeEach(function(done){
             element = Math.floor((Math.random()*1000000));
             var queue = new MemQueue(
@@ -119,12 +110,9 @@ describe('MemQueue#Events#onEmpty', function() {
             assert.equal(empty1called, true);
         });
     });
-});
-
-describe('MemQueue#Events#onEmpty', function() {
-    var empty1called = false;
-    var canCallDone = false;
     context('when make one push and one pop', function () {
+        var empty1called = false;
+        var canCallDone = false;
         beforeEach(function(done){
             element = Math.floor((Math.random()*1000000));
             var queue = new MemQueue(

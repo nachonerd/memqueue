@@ -31,30 +31,89 @@ var assert = require('assert')
 var testMemcachedHost = process.env.MEMCACHED__HOST || 'localhost';
 var testMemcachedPort = process.env.MEMCACHED__PORT || '11213';
 
-var element = Math.floor((Math.random()*1000000));
-var queue = new MemQueue(
-    "myqueue"+element,
-    testMemcachedHost+':'+testMemcachedPort
-);
-queue.push(
-    element,
-    2,
-    function (err) {
-        if (!err) {
-            setTimeout(function(){
-                queue.pop(
-                    function (err, data) {
-                        describe('Integrator Test 1', function() {
-                            context('when we make 1 push and 1 pop', function () {
-                                it("should obtained the same element pushed.", function () {
-                                    assert.equal(element, data);
-                                    queue.end();
-                                });
-                            });
-                        });
+describe('Integrator Test 1', function() {
+    context('when we make 1 push and 1 pop', function () {
+        var element = Math.floor((Math.random()*1000000));
+        var data = -1;
+        var queue = new MemQueue(
+            "myqueue"+element,
+            testMemcachedHost+':'+testMemcachedPort
+        );
+
+        beforeEach(function(done){
+            queue.push(
+                element,
+                2,
+                function (err) {
+                    if (!err) {
+                        setTimeout(function(){
+                            queue.pop(
+                                function (err, dataOb) {
+                                    if (!err) {
+                                        data = dataOb;
+                                        done();
+                                    }
+                                }
+                            )
+                        }), 1100;
                     }
-                )
-            }), 1100;
-        }
-    }
-);
+                }
+            );
+        });
+
+        it("should obtained the same element pushed.", function () {
+            assert.equal(element, data);
+            queue.end();
+        });
+    });
+    context('when we make 2 push and 2 pop', function () {
+        var element = Math.floor((Math.random()*1000000));
+        var data = -1;
+        var data2 = -1;
+        var queue = new MemQueue(
+            "myqueue"+element,
+            testMemcachedHost+':'+testMemcachedPort
+        );
+
+        beforeEach(function(done){
+            queue.push(
+                element+111,
+                2,
+                function (err) {
+                    queue.push(
+                        element,
+                        2,
+                        function (err) {
+                            if (!err) {
+                                queue.pop(
+                                    function (err, dataOb) {
+                                        if (!err) {
+                                            data = dataOb;
+                                            queue.pop(
+                                                function (err, dataOb) {
+                                                    if (!err) {
+                                                        data2 = dataOb;
+                                                        done();
+                                                    }
+                                                }
+                                            );
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                    );
+                }
+            );
+        });
+
+        it("should obtained the last element pushed first.", function () {
+            assert.equal(element, data);
+            queue.end();
+        });
+        it("should obtained the first element pushed last.", function () {
+            assert.equal(element+111, data2);
+            queue.end();
+        });
+    });
+});
