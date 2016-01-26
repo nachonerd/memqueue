@@ -70,8 +70,7 @@ Constructor
 Push
 
 Stores a new value in Memqueue.
-
-**Kind**: global function  
+**Emits**: <code>push</code>  
 **Api**: public  
 
 | Param | Type | Description |
@@ -85,8 +84,7 @@ Stores a new value in Memqueue.
 Pop
 
 Retrieve Last value from memqueue.
-
-**Kind**: global function  
+**Emits**: <code>pop</code>, <code>empty</code> 
 **Api**: public  
 
 | Param | Type | Description |
@@ -99,7 +97,6 @@ End
 
 Finish memcached connection.
 
-**Kind**: global function  
 **Api**: public  
 
 For more information see [Documentation](https://github.com/nachonerd/memqueue/blob/master/doc/documentation.md)

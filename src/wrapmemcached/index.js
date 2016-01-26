@@ -23,6 +23,10 @@
  * @link       https://github.com/nachonerd/memqueue
  */
 
+ /**
+  * Memcached
+  * @private
+  */
 var Memcached = require('memcached');
 var WrapMemCached = {};
 

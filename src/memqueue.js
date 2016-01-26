@@ -23,7 +23,15 @@
  * @link       https://github.com/nachonerd/memqueue
  */
 
+ /**
+  * Util
+  * @private
+  */
 var util = require('util');
+/**
+ * WrapMemCached
+ * @private
+ */
 var WrapMemCached = require('../src/wrapmemcached');
 var EventEmitter = require('events').EventEmitter;
 
@@ -48,7 +56,11 @@ function MemQueue(key, locations, options){
     }
     self.key = key;
     self.broker = WrapMemCached.getIntanceOf(locations, options);
-    self.heartbeat = 1;
+    /**
+     * @prototype {Number} heartbeat check interval measured in milliseconds, default 1 ms.
+     * @api public
+     */
+    this.heartbeat = 1;
     self.counter = 0;
 
     setInterval(function() {
@@ -103,7 +115,24 @@ function MemQueue(key, locations, options){
 
 util.inherits(MemQueue, EventEmitter);
 
-function push(value, lifetime, callback) {
+
+
+/**
+ * Push
+ *
+ * Stores a new value in Memqueue.
+ *
+ * @param {Mixed}    value    Either a buffer, JSON, number or string that
+ *                            you want to store.
+ * @param {Number}   lifetime how long the data needs to be stored measured
+ *                            in seconds
+ * @param {Function} callback the callback
+ *
+ * @return {void}
+ * @fires MemQueue#push
+ * @api public
+ */
+MemQueue.prototype.push = function(value, lifetime, callback) {
     var self = this;
     self.broker.get(
         self.key+"sem",
@@ -170,8 +199,19 @@ function push(value, lifetime, callback) {
         }
     );
 }
-
-function pop(callback) {
+/**
+ * Pop
+ *
+ * Retrieve Last value from memqueue.
+ *
+ * @param {Function} callback the callback
+ *
+ * @return {void}
+ * @fires MemQueue#pop
+ * @fires MemQueue#empty
+ * @api public
+ */
+MemQueue.prototype.pop = function(callback) {
     var self = this;
     self.broker.get(
         self.key+"sem",
@@ -246,39 +286,6 @@ function pop(callback) {
         }
     );
 }
-
-function end() {
-    this.broker.end();
-}
-
-/**
- * Push
- *
- * Stores a new value in Memqueue.
- *
- * @param {Mixed}    value    Either a buffer, JSON, number or string that
- *                            you want to store.
- * @param {Number}   lifetime how long the data needs to be stored measured
- *                            in seconds
- * @param {Function} callback the callback
- *
- * @return {void}
- * @fires MemQueue#push
- * @api public
- */
-MemQueue.prototype.push = push;
-/**
- * Pop
- *
- * Retrieve Last value from memqueue.
- *
- * @param {Function} callback the callback
- *
- * @return {void}
- * @fires MemQueue#pop, MemQueue#empty
- * @api public
- */
-MemQueue.prototype.pop = pop;
 /**
  * End
  *
@@ -287,6 +294,8 @@ MemQueue.prototype.pop = pop;
  * @return {void}
  * @api public
  */
-MemQueue.prototype.end = end;
+MemQueue.prototype.end = function() {
+    this.broker.end();
+}
 
 module.exports = MemQueue;
